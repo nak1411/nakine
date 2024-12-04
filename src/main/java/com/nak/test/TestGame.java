@@ -52,7 +52,7 @@ public class TestGame implements Logic {
     public TestGame() throws Exception {
         renderer = new RenderEngine();
         window = Launcher.getWindow();
-        camera = new Camera(new Vector3f(-3, 5, -3), new Vector3f(45, 135, 0));
+        camera = new Camera(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
         cameraInc = new Vector3f(0, 0, 0);
         sceneManager = new SceneManager(80);
         keyInput = new KeyInput(camera);
@@ -68,7 +68,19 @@ public class TestGame implements Logic {
         chunk = new Chunk(sceneManager, loader);
         new Thread(() -> {
             while (!GLFW.glfwWindowShouldClose(window.getWindow())){
-                chunk.render();
+                chunk.renderThreadOne();
+            }
+        }).start();
+
+        new Thread(() -> {
+            while (!GLFW.glfwWindowShouldClose(window.getWindow())){
+                chunk.renderThreadTwo();
+            }
+        }).start();
+
+        new Thread(() -> {
+            while (!GLFW.glfwWindowShouldClose(window.getWindow())){
+                chunk.clearTerrain();
             }
         }).start();
 

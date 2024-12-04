@@ -20,6 +20,8 @@ public class Chunk {
 
     private Model cube, outline;
     private List<Vector3f> usedPos = new ArrayList<>();
+    ImFloat entityScale = new ImFloat(0.5f);
+    int id = 0;
 
     public Chunk(SceneManager scene, Loader loader) {
         this.scene = scene;
@@ -32,18 +34,73 @@ public class Chunk {
         outline.getMaterial().setDisableCulling(false);
     }
 
-    public void render(){
-        int id = 0;
-        ImFloat entityScale = new ImFloat(1);
-        for (int i = 0; i < Camera.getPosition().x + Constants.NUM_ENTITIES.get(); i++) {
+    public void renderThreadOne() {
+        // Quad ONE
+        for (int i = (int) (Camera.getPosition().x - Constants.NUM_ENTITIES.get()); i < Camera.getPosition().x; i++) {
             id += i;
-            for (int j = 0; j < Camera.getPosition().x + Constants.NUM_ENTITIES.get(); j++) {
+            for (int j = (int) (Camera.getPosition().z); j < Camera.getPosition().z + Constants.NUM_ENTITIES.get(); j++) {
                 id += j / 2;
-                if (!usedPos.contains(new Vector3f(i * 2, 0, j * 2))) {
-                    scene.addEntity(new Entity(id, cube, new Vector3f(i * 2, 0, j * 2), new Vector3f(0, 0, 0), entityScale));
-                    scene.addOutline(new Entity(id, outline, new Vector3f(i * 2, 0, j * 2), new Vector3f(0, 0, 0), entityScale));
-                    usedPos.add(new Vector3f(i * 2, 0, j * 2));
+                if (!usedPos.contains(new Vector3f(i, 0, j))) {
+                    scene.addEntity(new Entity(id, cube, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    scene.addOutline(new Entity(id, outline, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    usedPos.add(new Vector3f(i, 0, j));
                 }
+            }
+        }
+        // Quad TWO
+        for (int i = (int) Camera.getPosition().x; i < Camera.getPosition().x + Constants.NUM_ENTITIES.get(); i++) {
+            id += i;
+            for (int j = (int) (Camera.getPosition().z); j < Camera.getPosition().z + Constants.NUM_ENTITIES.get(); j++) {
+                id += j / 2;
+                if (!usedPos.contains(new Vector3f(i, 0, j))) {
+                    scene.addEntity(new Entity(id, cube, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    scene.addOutline(new Entity(id, outline, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    usedPos.add(new Vector3f(i, 0, j));
+                }
+            }
+        }
+    }
+
+    public void renderThreadTwo() {
+        // Quad THREE
+        for (int i = (int) (Camera.getPosition().x - Constants.NUM_ENTITIES.get()); i < Camera.getPosition().x; i++) {
+            id += i;
+            for (int j = (int) (Camera.getPosition().z - Constants.NUM_ENTITIES.get()); j < Camera.getPosition().z; j++) {
+                id += j / 2;
+                if (!usedPos.contains(new Vector3f(i, 0, j))) {
+                    scene.addEntity(new Entity(id, cube, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    scene.addOutline(new Entity(id, outline, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    usedPos.add(new Vector3f(i, 0, j));
+                }
+            }
+        }
+        // Quad FOUR
+        for (int i = (int) Camera.getPosition().x; i < Camera.getPosition().x + Constants.NUM_ENTITIES.get(); i++) {
+            id += i;
+            for (int j = (int) (Camera.getPosition().z - Constants.NUM_ENTITIES.get()); j < Camera.getPosition().z; j++) {
+                id += j / 2;
+                if (!usedPos.contains(new Vector3f(i, 0, j))) {
+                    scene.addEntity(new Entity(id, cube, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    scene.addOutline(new Entity(id, outline, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
+                    usedPos.add(new Vector3f(i, 0, j));
+                }
+            }
+        }
+    }
+
+    public void clearTerrain(){
+        for (int i = 0; i < scene.getEntities().size(); i++){
+            int distX = (int) (Camera.getPosition().x - scene.getEntities().get(i).getPos().x);
+            int distZ = (int) (Camera.getPosition().z - scene.getEntities().get(i).getPos().z);
+
+            if (distX < 0)
+                distX = -distX;
+            if (distZ < 0)
+                distZ = -distZ;
+
+            if ((distX > Constants.NUM_ENTITIES.get()) ||(distZ > Constants.NUM_ENTITIES.get())){
+                usedPos.remove(scene.getEntities().get(i).getPos());
+                scene.getEntities().remove(i);
             }
         }
     }

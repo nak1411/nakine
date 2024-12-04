@@ -7,6 +7,8 @@ import com.nak.core.util.Constants;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SceneManager {
@@ -24,8 +26,8 @@ public class SceneManager {
     private float spotInc = 1;
 
     public SceneManager(float lightAngle) {
-        entities = new ArrayList<>();
-        outlines = new ArrayList<>();
+        entities = Collections.synchronizedList(new ArrayList<>());
+        outlines = Collections.synchronizedList(new ArrayList<>());
         //terrains = new ArrayList<>();
         ambientLight = Constants.AMBIENT_COLOR;
         this.lightAngle = lightAngle;
