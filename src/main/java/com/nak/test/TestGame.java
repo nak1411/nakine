@@ -67,23 +67,16 @@ public class TestGame implements Logic {
 
         chunk = new Chunk(sceneManager, loader);
         new Thread(() -> {
-            while (!GLFW.glfwWindowShouldClose(window.getWindow())){
+            while (!GLFW.glfwWindowShouldClose(window.getWindow())) {
                 chunk.renderThreadOne();
             }
         }).start();
 
         new Thread(() -> {
-            while (!GLFW.glfwWindowShouldClose(window.getWindow())){
+            while (!GLFW.glfwWindowShouldClose(window.getWindow())) {
                 chunk.renderThreadTwo();
             }
         }).start();
-
-        new Thread(() -> {
-            while (!GLFW.glfwWindowShouldClose(window.getWindow())){
-                chunk.clearTerrain();
-            }
-        }).start();
-
 
         lightWidget = ModelLoader.loadModel(loader, "/models/TestCube.obj");
         lightWidget.getMaterial().setDisableCulling(false);
@@ -116,7 +109,7 @@ public class TestGame implements Logic {
             updateCameraRotation();
             camera.moveRotation(rotVec.x * Constants.MOUSE_MOVE_SPEED, rotVec.y * Constants.MOUSE_MOVE_SPEED, 0);
         }
-            keyInput.update();
+        keyInput.update();
     }
 
     private void updateCameraRotation() {
@@ -151,13 +144,35 @@ public class TestGame implements Logic {
 //        sceneManager.getDirectionalLight().getDirection().y = (float) Math.cos(angRad);
 
         for (int i = 0; i < sceneManager.getEntities().size(); i++) {
-            renderer.processEntities(sceneManager.getEntities().get(i));
+            int distX = (int) (Camera.getPosition().x - sceneManager.getEntities().get(i).getPos().x);
+            int distZ = (int) (Camera.getPosition().z - sceneManager.getEntities().get(i).getPos().z);
+
+            if (distX < 0)
+                distX = -distX;
+            if (distZ < 0)
+                distZ = -distZ;
+
+            if ((distX <= Constants.NUM_ENTITIES.get()) && (distZ <= Constants.NUM_ENTITIES.get())) {
+                renderer.processEntities(sceneManager.getEntities().get(i));
+            }
+
             if (sceneManager.getEntities().get(i).getModel() == lightWidget)
                 sceneManager.getEntities().get(i).setPos(new Vector3f(sceneManager.getDirectionalLight().getDirection().x, sceneManager.getDirectionalLight().getDirection().y, sceneManager.getDirectionalLight().getDirection().z));
         }
+
         for (int i = 0; i < sceneManager.getOutlines().size(); i++) {
-            sceneManager.getOutlines().get(i).setRotation(new Vector3f(increment, increment, increment));
-            renderer.processOutlines(sceneManager.getOutlines().get(i));
+            int distX = (int) (Camera.getPosition().x - sceneManager.getEntities().get(i).getPos().x);
+            int distZ = (int) (Camera.getPosition().z - sceneManager.getEntities().get(i).getPos().z);
+
+            if (distX < 0)
+                distX = -distX;
+            if (distZ < 0)
+                distZ = -distZ;
+
+            if ((distX <= Constants.NUM_ENTITIES.get()) && (distZ <= Constants.NUM_ENTITIES.get())) {
+                sceneManager.getOutlines().get(i).setRotation(new Vector3f(increment, increment, increment));
+                renderer.processOutlines(sceneManager.getOutlines().get(i));
+            }
         }
         imGuiLayer.update(frameTime, renderer);
     }

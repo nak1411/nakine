@@ -20,18 +20,25 @@ public class Chunk {
 
     private Model cube, outline;
     private List<Vector3f> usedPos = new ArrayList<>();
-    ImFloat entityScale = new ImFloat(0.5f);
+    ImFloat entityScale = new ImFloat(1);
     int id = 0;
 
     public Chunk(SceneManager scene, Loader loader) {
         this.scene = scene;
 
-        cube = ModelLoader.loadModel(loader, "/models/TestCube.obj");
-        cube.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
-        cube.getMaterial().setDisableCulling(false);
-        outline = ModelLoader.loadModel(loader, "/models/TestCube.obj");
-        outline.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
-        outline.getMaterial().setDisableCulling(false);
+          cube = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);
+          cube.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
+          cube.getMaterial().setDisableCulling(false);
+          outline = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);
+          outline.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
+          outline.getMaterial().setDisableCulling(false);
+
+//        cube = ModelLoader.loadModel(loader, "/models/TestCube.obj");
+//        cube.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
+//        cube.getMaterial().setDisableCulling(false);
+//        outline = ModelLoader.loadModel(loader, "/models/TestCube.obj");
+//        outline.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
+//        outline.getMaterial().setDisableCulling(false);
     }
 
     public void renderThreadOne() {
@@ -84,23 +91,6 @@ public class Chunk {
                     scene.addOutline(new Entity(id, outline, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), entityScale));
                     usedPos.add(new Vector3f(i, 0, j));
                 }
-            }
-        }
-    }
-
-    public void clearTerrain(){
-        for (int i = 0; i < scene.getEntities().size(); i++){
-            int distX = (int) (Camera.getPosition().x - scene.getEntities().get(i).getPos().x);
-            int distZ = (int) (Camera.getPosition().z - scene.getEntities().get(i).getPos().z);
-
-            if (distX < 0)
-                distX = -distX;
-            if (distZ < 0)
-                distZ = -distZ;
-
-            if ((distX > Constants.NUM_ENTITIES.get()) ||(distZ > Constants.NUM_ENTITIES.get())){
-                usedPos.remove(scene.getEntities().get(i).getPos());
-                scene.getEntities().remove(i);
             }
         }
     }

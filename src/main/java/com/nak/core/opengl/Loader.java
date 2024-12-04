@@ -25,6 +25,14 @@ public class Loader {
         return new Model(vaoID, indices.length);
     }
 
+    public Model loadModel(float[] vertices, float[] textureCoords, int[] indices) {
+        int vaoID = setupVAO();
+        setupEBO(indices);
+        setupVBO(0, 3, vertices);
+        setupVBO(1, 2, textureCoords);
+        return new Model(vaoID, indices.length);
+    }
+
     public int loadTexture(String filename) {
         int width, height;
         ByteBuffer buffer;
