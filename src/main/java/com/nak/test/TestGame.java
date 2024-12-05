@@ -44,7 +44,7 @@ public class TestGame implements Logic {
 
     private Chunk chunk;
 
-    private Model lightWidget, cube, outline;
+    private Model lightWidget, cube, outline, entityTest;
 
     private Camera camera;
     Vector3f cameraInc;
@@ -54,7 +54,7 @@ public class TestGame implements Logic {
 
     private List<Vector3f> usedPos = new ArrayList<>();
     private List<Chunk> chunks = new ArrayList<>();
-    ImFloat blockScale = new ImFloat(1);
+    ImFloat blockScale = new ImFloat(0.5f);
     int id = 0;
 
     public TestGame() throws Exception {
@@ -74,7 +74,7 @@ public class TestGame implements Logic {
         renderer.init();
 
         // Create models/terrain
-        cube = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);
+        cube = loader.loadModel(Block.vertices, Block.texturePos, Block.normals, Block.indices);
         cube.setTexture(new Texture(loader.loadTexture("textures/grass_block.png")), 1.0f);
         cube.getMaterial().setDisableCulling(true);
         outline = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);

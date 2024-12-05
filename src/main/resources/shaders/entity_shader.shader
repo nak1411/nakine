@@ -1,4 +1,4 @@
-#SHADER_VERT_NORMAL
+#SHADER_VERT
 #version 400 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
@@ -21,7 +21,7 @@ void main()
     outTextureCoord = aTexCoord;
 }
 
-#SHADER_FRAG_NORMAL
+#SHADER_FRAG
 #version 400 core
 
 const int MAX_POINT_LIGHTS = 5;
@@ -171,37 +171,4 @@ void main()
     } else {
         color = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
     }
-}
-
-#SHADER_VERT_OUTLINE
-#version 400 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTexCoord;
-layout (location = 2) in vec3 normal;
-
-out vec3 outNormal;
-out vec3 outPos;
-
-uniform mat4 transformationMatrixOutline;
-uniform mat4 projectionMatrixOutline;
-uniform mat4 viewMatrixOutline;
-uniform float outlineScale;
-
-void main()
-{
-    vec4 worldPos = transformationMatrixOutline * vec4(aPos * outlineScale, 1.0);
-    gl_Position = projectionMatrixOutline * viewMatrixOutline * worldPos;
-    outNormal = normalize(transformationMatrixOutline * vec4(normal * outlineScale, 0.0)).xyz;
-    outPos = worldPos.xyz;
-}
-
-#SHADER_FRAG_OUTLINE
-#version 400 core
-
-out vec4 color;
-
-uniform vec4 outlineColor;
-
-void main(){
-    color = outlineColor;
 }

@@ -19,8 +19,9 @@ import java.util.Objects;
 
 public class ShaderManager {
 
-    private int vertexShader, geometryShader, fragmentShader, outlineVertexShader, outlineFragmentShader, pickingVertexShader, pickingFragmentShader;
-    private int shaderProgram, shaderOutlineProgram, shaderPickingProgram;
+    private int entityVertexShader, entityFragmentShader, outlineVertexShader, outlineFragmentShader, pickingVertexShader,
+            pickingFragmentShader, terrainVertexShader, terrainFragmentShader;
+    private int entityShaderProgram, outlineShaderProgram, shaderPickingProgram, terrainShaderProgram;
 
     private final Map<String, Integer> uniforms;
 
@@ -29,51 +30,76 @@ public class ShaderManager {
     }
 
     public void createShaders() {
+
+        /// *********ENTITY****************************************************** ///
         // Create vertex shader
-        vertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
-        GL30.glShaderSource(vertexShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[0]);
-        GL30.glCompileShader(vertexShader);
-        checkShaderErrors(vertexShader, "VERTEX");
+        entityVertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
+        GL30.glShaderSource(entityVertexShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[0]);
+        GL30.glCompileShader(entityVertexShader);
+        checkShaderErrors(entityVertexShader, "VERTEX");
         // Create fragment shader
-        fragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
-        GL30.glShaderSource(fragmentShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[1]);
-        GL30.glCompileShader(fragmentShader);
-        checkShaderErrors(fragmentShader, "FRAGMENT");
+        entityFragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
+        GL30.glShaderSource(entityFragmentShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[1]);
+        GL30.glCompileShader(entityFragmentShader);
+        checkShaderErrors(entityFragmentShader, "FRAGMENT");
+
+        /// *********OUTLINE****************************************************** ///
         // Create vertex outline shader
         outlineVertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
-        GL30.glShaderSource(outlineVertexShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[2]);
+        GL30.glShaderSource(outlineVertexShader, FileUtils.loadShaderFile("/shaders/outline_shader.shader")[0]);
         GL30.glCompileShader(outlineVertexShader);
-        checkShaderErrors(outlineVertexShader, "OUTLINE_VERTEX");
+        checkShaderErrors(outlineVertexShader, "VERTEX");
         // Create fragment outline shader
         outlineFragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
-        GL30.glShaderSource(outlineFragmentShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[3]);
+        GL30.glShaderSource(outlineFragmentShader, FileUtils.loadShaderFile("/shaders/outline_shader.shader")[1]);
         GL30.glCompileShader(outlineFragmentShader);
-        checkShaderErrors(outlineFragmentShader, "OUTLINE_FRAGMENT");
+        checkShaderErrors(outlineFragmentShader, "FRAGMENT");
+
+        /// *********TERRAIN****************************************************** ///
+        // Create terrain vertex shader
+        terrainVertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
+        GL30.glShaderSource(terrainVertexShader, FileUtils.loadShaderFile("/shaders/terrain_shader.shader")[0]);
+        GL30.glCompileShader(terrainVertexShader);
+        checkShaderErrors(terrainVertexShader, "VERTEX");
+        // Create terrain fragment shader
+        terrainFragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
+        GL30.glShaderSource(terrainFragmentShader, FileUtils.loadShaderFile("/shaders/terrain_shader.shader")[1]);
+        GL30.glCompileShader(terrainFragmentShader);
+        checkShaderErrors(terrainFragmentShader, "FRAGMENT");
+
+        /// *********PICKING****************************************************** ///
         // Create vertex picking shader
         pickingVertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
-        GL30.glShaderSource(pickingVertexShader, FileUtils.loadShaderFile("/shaders/picking_shader.shader")[4]);
+        GL30.glShaderSource(pickingVertexShader, FileUtils.loadShaderFile("/shaders/picking_shader.shader")[0]);
         GL30.glCompileShader(pickingVertexShader);
-        checkShaderErrors(pickingVertexShader, "PICKING_VERTEX");
+        checkShaderErrors(pickingVertexShader, "VERTEX");
         // Create fragment picking shader
         pickingFragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
-        GL30.glShaderSource(pickingFragmentShader, FileUtils.loadShaderFile("/shaders/picking_shader.shader")[5]);
+        GL30.glShaderSource(pickingFragmentShader, FileUtils.loadShaderFile("/shaders/picking_shader.shader")[1]);
         GL30.glCompileShader(pickingFragmentShader);
-        checkShaderErrors(pickingFragmentShader, "PICKING_FRAGMENT");
+        checkShaderErrors(pickingFragmentShader, "FRAGMENT");
 
 
-        shaderProgram = GL30.glCreateProgram();
-        GL30.glAttachShader(shaderProgram, vertexShader);
-        GL30.glAttachShader(shaderProgram, fragmentShader);
-        GL30.glLinkProgram(shaderProgram);
-        GL30.glValidateProgram(shaderProgram);
-        checkShaderErrors(shaderProgram, "PROGRAM");
+        entityShaderProgram = GL30.glCreateProgram();
+        GL30.glAttachShader(entityShaderProgram, entityVertexShader);
+        GL30.glAttachShader(entityShaderProgram, entityFragmentShader);
+        GL30.glLinkProgram(entityShaderProgram);
+        GL30.glValidateProgram(entityShaderProgram);
+        checkShaderErrors(entityShaderProgram, "PROGRAM");
 
-        shaderOutlineProgram = GL30.glCreateProgram();
-        GL30.glAttachShader(shaderOutlineProgram, outlineVertexShader);
-        GL30.glAttachShader(shaderOutlineProgram, outlineFragmentShader);
-        GL30.glLinkProgram(shaderOutlineProgram);
-        GL30.glValidateProgram(shaderOutlineProgram);
-        checkShaderErrors(shaderOutlineProgram, "PROGRAM");
+        terrainShaderProgram = GL30.glCreateProgram();
+        GL30.glAttachShader(terrainShaderProgram, terrainVertexShader);
+        GL30.glAttachShader(terrainShaderProgram, terrainFragmentShader);
+        GL30.glLinkProgram(terrainShaderProgram);
+        GL30.glValidateProgram(terrainShaderProgram);
+        checkShaderErrors(terrainShaderProgram, "PROGRAM");
+
+        outlineShaderProgram = GL30.glCreateProgram();
+        GL30.glAttachShader(outlineShaderProgram, outlineVertexShader);
+        GL30.glAttachShader(outlineShaderProgram, outlineFragmentShader);
+        GL30.glLinkProgram(outlineShaderProgram);
+        GL30.glValidateProgram(outlineShaderProgram);
+        checkShaderErrors(outlineShaderProgram, "PROGRAM");
 
         shaderPickingProgram = GL30.glCreateProgram();
         GL30.glAttachShader(shaderPickingProgram, pickingVertexShader);
@@ -82,26 +108,30 @@ public class ShaderManager {
         GL30.glValidateProgram(shaderPickingProgram);
         checkShaderErrors(shaderPickingProgram, "PROGRAM");
 
-        GL30.glDeleteShader(vertexShader);
-        GL30.glDeleteShader(fragmentShader);
+        GL30.glDeleteShader(entityVertexShader);
+        GL30.glDeleteShader(entityFragmentShader);
+        GL30.glDeleteShader(terrainVertexShader);
+        GL30.glDeleteShader(terrainFragmentShader);
         GL30.glDeleteShader(outlineVertexShader);
         GL30.glDeleteShader(outlineFragmentShader);
         GL30.glDeleteShader(pickingVertexShader);
         GL30.glDeleteShader(pickingFragmentShader);
     }
 
-    public void useNormalShader() {
-        GL30.glUseProgram(shaderProgram);
+    public void useEntityShader() {
+        GL30.glUseProgram(entityShaderProgram);
+    }
+
+    public void useTerrainShader() {
+        GL30.glUseProgram(terrainShaderProgram);
     }
 
     public void useOutlineShader() {
-        GL30.glUseProgram(shaderOutlineProgram);
-
+        GL30.glUseProgram(outlineShaderProgram);
     }
 
     public void usePickingShader() {
         GL30.glUseProgram(shaderPickingProgram);
-
     }
 
     public void stop() {
@@ -125,7 +155,7 @@ public class ShaderManager {
         uniforms.put(uniformName, uniformLocation);
     }
 
-    public void createMaterialUniform(String uniformName) throws Exception {
+    public void createMaterialUniform(String uniformName, int shaderProgram) throws Exception {
         createUniform(uniformName + ".ambient", shaderProgram);
         createUniform(uniformName + ".diffuse", shaderProgram);
         createUniform(uniformName + ".specular", shaderProgram);
@@ -133,14 +163,14 @@ public class ShaderManager {
         createUniform(uniformName + ".reflectance", shaderProgram);
     }
 
-    public void createDirectionalLightUniform(String uniformName) throws Exception {
+    public void createDirectionalLightUniform(String uniformName, int shaderProgram) throws Exception {
         createUniform(uniformName + ".color", shaderProgram);
         createUniform(uniformName + ".direction", shaderProgram);
         createUniform(uniformName + ".intensity", shaderProgram);
 
     }
 
-    public void createPointLightUniform(String uniformName) throws Exception {
+    public void createPointLightUniform(String uniformName, int shaderProgram) throws Exception {
         createUniform(uniformName + ".color", shaderProgram);
         createUniform(uniformName + ".position", shaderProgram);
         createUniform(uniformName + ".intensity", shaderProgram);
@@ -149,21 +179,21 @@ public class ShaderManager {
         createUniform(uniformName + ".exponent", shaderProgram);
     }
 
-    public void createSpotLightUniform(String uniformName) throws Exception {
-        createPointLightUniform(uniformName + ".pl");
+    public void createSpotLightUniform(String uniformName, int shaderProgram) throws Exception {
+        createPointLightUniform(uniformName + ".pl", shaderProgram);
         createUniform(uniformName + ".conedir", shaderProgram);
         createUniform(uniformName + ".cutoff", shaderProgram);
     }
 
-    public void createPointLightListUniform(String uniformName, int size) throws Exception {
+    public void createPointLightListUniform(String uniformName, int size, int shaderProgram) throws Exception {
         for (int i = 0; i < size; i++) {
-            createPointLightUniform(uniformName + "[" + i + "]");
+            createPointLightUniform(uniformName + "[" + i + "]", shaderProgram);
         }
     }
 
-    public void createSpotLightListUniform(String uniformName, int size) throws Exception {
+    public void createSpotLightListUniform(String uniformName, int size, int shaderProgram) throws Exception {
         for (int i = 0; i < size; i++) {
-            createSpotLightUniform(uniformName + "[" + i + "]");
+            createSpotLightUniform(uniformName + "[" + i + "]", shaderProgram);
         }
     }
 
@@ -251,27 +281,20 @@ public class ShaderManager {
         GL30.glUniform1f(uniforms.get(uniformName), value.get());
     }
 
-    public int getShaderProgram() {
-        return shaderProgram;
+    public int getEntityShaderProgram() {
+        return entityShaderProgram;
     }
 
-    public void setShaderProgram(int shaderProgram) {
-        this.shaderProgram = shaderProgram;
+    public int getTerrainShaderProgram() {
+        return terrainShaderProgram;
     }
 
-    public int getShaderOutlineProgram() {
-        return shaderOutlineProgram;
-    }
-
-    public void setShaderOutlineProgram(int shaderOutlineProgram) {
-        this.shaderOutlineProgram = shaderOutlineProgram;
+    public int getOutlineShaderProgram() {
+        return outlineShaderProgram;
     }
 
     public int getShaderPickingProgram() {
         return shaderPickingProgram;
     }
 
-    public void setShaderPickingProgram(int shaderPickingProgram) {
-        this.shaderPickingProgram = shaderPickingProgram;
-    }
 }

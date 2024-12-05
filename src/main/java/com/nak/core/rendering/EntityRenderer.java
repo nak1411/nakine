@@ -145,13 +145,13 @@ public class EntityRenderer implements Renderer {
 
     public void preparePickingTransform(ShaderManager shader, Object entity, Camera camera) {
         shader.usePickingShader();
-        shader.setUniform("projectionMatrixPicking", Launcher.getWindow().updateProjectionMatrix());
-        shader.setUniform("viewMatrixPicking", Utils.getViewMatrix(camera));
-        shader.setUniform("transformationMatrixPicking", Utils.createTransformationMatrix((Entity) entity));
+        shader.setUniform("projectionMatrix", Launcher.getWindow().updateProjectionMatrix());
+        shader.setUniform("viewMatrix", Utils.getViewMatrix(camera));
+        shader.setUniform("transformationMatrix", Utils.createTransformationMatrix((Entity) entity));
     }
 
     public void prepareNormalTransform(ShaderManager shader, Object entity, Camera camera) {
-        shader.useNormalShader();
+        shader.useEntityShader();
         shader.setUniform("projectionMatrix", Launcher.getWindow().updateProjectionMatrix());
         shader.setUniform("viewMatrix", Utils.getViewMatrix(camera));
         shader.setUniform("depthVisualizer", RenderEngine.isDepthVisualizer() ? 1 : 0);
@@ -160,9 +160,9 @@ public class EntityRenderer implements Renderer {
 
     public void prepareOutlineTransform(ShaderManager shader, Object entity, Camera camera) {
         shader.useOutlineShader();
-        shader.setUniform("projectionMatrixOutline", Launcher.getWindow().updateProjectionMatrix());
-        shader.setUniform("viewMatrixOutline", Utils.getViewMatrix(camera));
-        shader.setUniform("transformationMatrixOutline", Utils.createTransformationMatrix((Entity) entity));
+        shader.setUniform("projectionMatrix", Launcher.getWindow().updateProjectionMatrix());
+        shader.setUniform("viewMatrix", Utils.getViewMatrix(camera));
+        shader.setUniform("transformationMatrix", Utils.createTransformationMatrix((Entity) entity));
     }
 
     public void imgui() {

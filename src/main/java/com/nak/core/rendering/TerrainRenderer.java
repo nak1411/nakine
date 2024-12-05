@@ -86,6 +86,7 @@ public class TerrainRenderer implements Renderer {
         GL30.glBindVertexArray(model.getVaoID());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
+        GL30.glEnableVertexAttribArray(2);
 
         if (model.getMaterial().isDisableCulling())
             RenderEngine.disableCulling();
@@ -101,22 +102,23 @@ public class TerrainRenderer implements Renderer {
     public void unbind() {
         GL30.glDisableVertexAttribArray(0);
         GL30.glDisableVertexAttribArray(1);
+        GL30.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
     }
 
     public void preparePickingTransform(ShaderManager shader, Object block, Camera camera) {
         shader.usePickingShader();
-        shader.setUniform("projectionMatrixPicking", Launcher.getWindow().updateProjectionMatrix());
-        shader.setUniform("viewMatrixPicking", Utils.getViewMatrix(camera));
-        shader.setUniform("transformationMatrixPicking", Utils.createTransformationMatrix((Block) block));
+        shader.setUniform("projectionMatrix", Launcher.getWindow().updateProjectionMatrix());
+        shader.setUniform("viewMatrix", Utils.getViewMatrix(camera));
+        shader.setUniform("transformationMatrix", Utils.createTransformationMatrix((Block) block));
     }
 
     public void prepareNormalTransform(ShaderManager shader, Object block, Camera camera) {
-        shader.useNormalShader();
-        shader.setUniform("projectionMatrix", Launcher.getWindow().updateProjectionMatrix());
-        shader.setUniform("viewMatrix", Utils.getViewMatrix(camera));
+        shader.useTerrainShader();
+        shader.setUniform("projectionMatrixTerrain", Launcher.getWindow().updateProjectionMatrix());
+        shader.setUniform("viewMatrixTerrain", Utils.getViewMatrix(camera));
         shader.setUniform("depthVisualizer", RenderEngine.isDepthVisualizer() ? 1 : 0);
-        shader.setUniform("transformationMatrix", Utils.createTransformationMatrix((Block) block));
+        shader.setUniform("transformationMatrixTerrain", Utils.createTransformationMatrix((Block) block));
     }
 
     public void imgui() {

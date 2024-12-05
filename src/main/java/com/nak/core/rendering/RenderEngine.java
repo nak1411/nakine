@@ -1,6 +1,5 @@
 package com.nak.core.rendering;
 
-import com.nak.core.EngineManager;
 import com.nak.core.WindowManager;
 import com.nak.core.entities.Camera;
 import com.nak.core.entities.SceneManager;
@@ -14,23 +13,14 @@ import com.nak.core.opengl.Framebuffer;
 import com.nak.core.terrain.Block;
 import com.nak.core.textures.PickingTexture;
 import com.nak.core.util.Constants;
-import com.nak.core.util.Utils;
 import com.nak.test.Launcher;
-import com.nak.test.TestGame;
 import imgui.ImGui;
-import imgui.ImVec4;
-import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImFloat;
-import imgui.type.ImInt;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class RenderEngine {
@@ -67,33 +57,59 @@ public class RenderEngine {
 
     public void init() throws Exception {
         entityRenderer.init();
+        terrainRenderer.init();
 
         shader.createShaders();
+        createEntityShader();
+        createTerrainShader();
+        createOutlineShader();
+        createPickingShader();
+    }
 
-        shader.useNormalShader();
-        shader.createUniform("depthVisualizer", shader.getShaderProgram());
-        shader.createUniform("transformationMatrix", shader.getShaderProgram());
-        shader.createUniform("projectionMatrix", shader.getShaderProgram());
-        shader.createUniform("viewMatrix", shader.getShaderProgram());
-        shader.createUniform("textureSampler", shader.getShaderProgram());
-        shader.createUniform("ambientLight", shader.getShaderProgram());
-        shader.createMaterialUniform("material");
-        shader.createUniform("specularPower", shader.getShaderProgram());
-        shader.createDirectionalLightUniform("directionalLight");
-        shader.createPointLightListUniform("pointLights", 5);
-        shader.createSpotLightListUniform("spotLights", 5);
+    private void createEntityShader() throws Exception{
+        shader.useEntityShader();
+        shader.createUniform("depthVisualizer", shader.getEntityShaderProgram());
+        shader.createUniform("transformationMatrix", shader.getEntityShaderProgram());
+        shader.createUniform("projectionMatrix", shader.getEntityShaderProgram());
+        shader.createUniform("viewMatrix", shader.getEntityShaderProgram());
+        shader.createUniform("textureSampler", shader.getEntityShaderProgram());
+        shader.createUniform("ambientLight", shader.getEntityShaderProgram());
+        shader.createMaterialUniform("material", shader.getEntityShaderProgram());
+        shader.createUniform("specularPower", shader.getEntityShaderProgram());
+        shader.createDirectionalLightUniform("directionalLight", shader.getEntityShaderProgram());
+        shader.createPointLightListUniform("pointLights", 5, shader.getEntityShaderProgram());
+        shader.createSpotLightListUniform("spotLights", 5, shader.getEntityShaderProgram());
+    }
 
+    private void createTerrainShader() throws Exception{
+        shader.useTerrainShader();
+        shader.createUniform("depthVisualizer", shader.getTerrainShaderProgram());
+        shader.createUniform("transformationMatrixTerrain", shader.getTerrainShaderProgram());
+        shader.createUniform("projectionMatrixTerrain", shader.getTerrainShaderProgram());
+        shader.createUniform("viewMatrixTerrain", shader.getTerrainShaderProgram());
+        shader.createUniform("textureSampler", shader.getTerrainShaderProgram());
+        shader.createUniform("ambientLight", shader.getTerrainShaderProgram());
+        shader.createMaterialUniform("material", shader.getTerrainShaderProgram());
+        shader.createUniform("specularPower", shader.getTerrainShaderProgram());
+        shader.createDirectionalLightUniform("directionalLight", shader.getTerrainShaderProgram());
+        shader.createPointLightListUniform("pointLights", 5, shader.getTerrainShaderProgram());
+        shader.createSpotLightListUniform("spotLights", 5, shader.getTerrainShaderProgram());
+    }
+
+    private void createOutlineShader() throws Exception{
         shader.useOutlineShader();
-        shader.createUniform("transformationMatrixOutline", shader.getShaderOutlineProgram());
-        shader.createUniform("projectionMatrixOutline", shader.getShaderOutlineProgram());
-        shader.createUniform("viewMatrixOutline", shader.getShaderOutlineProgram());
-        shader.createUniform("outlineScale", shader.getShaderOutlineProgram());
-        shader.createUniform("outlineColor", shader.getShaderOutlineProgram());
+        shader.createUniform("transformationMatrix", shader.getOutlineShaderProgram());
+        shader.createUniform("projectionMatrix", shader.getOutlineShaderProgram());
+        shader.createUniform("viewMatrix", shader.getOutlineShaderProgram());
+        shader.createUniform("outlineScale", shader.getOutlineShaderProgram());
+        shader.createUniform("outlineColor", shader.getOutlineShaderProgram());
+    }
 
+    private void createPickingShader() throws Exception{
         shader.usePickingShader();
-        shader.createUniform("transformationMatrixPicking", shader.getShaderPickingProgram());
-        shader.createUniform("projectionMatrixPicking", shader.getShaderPickingProgram());
-        shader.createUniform("viewMatrixPicking", shader.getShaderPickingProgram());
+        shader.createUniform("transformationMatrix", shader.getShaderPickingProgram());
+        shader.createUniform("projectionMatrix", shader.getShaderPickingProgram());
+        shader.createUniform("viewMatrix", shader.getShaderPickingProgram());
         shader.createUniform("pickingColor", shader.getShaderPickingProgram());
     }
 
@@ -112,6 +128,7 @@ public class RenderEngine {
         WindowManager.setResize(false);
 
         // RENDER PICKING PASS
+        shader.usePickingShader();
         if (RenderEngine.isPickingVisualizer())
             renderPicking(camera, scene);
 
@@ -120,9 +137,11 @@ public class RenderEngine {
             MouseInput.get().setMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT, false);
         }
         //RENDER NORMAL PASS
+
         renderNormal(clickedObject, camera, scene);
 
         // RENDER OUTLINE PASS
+        shader.useOutlineShader();
         renderOutlines(clickedObject, camera, scene);
 
         framebuffer.unbind();
@@ -132,7 +151,9 @@ public class RenderEngine {
         clear();
         GL30.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
         GL30.glStencilMask(0xFF);
+        shader.useEntityShader();
         entityRenderer.render(clickedObject, shader, camera, scene.getPointLights(), scene.getSpotLights(), scene.getDirectionalLight());
+        shader.useTerrainShader();
         terrainRenderer.render(clickedObject, shader, camera, scene.getPointLights(), scene.getSpotLights(), scene.getDirectionalLight());
     }
 
@@ -259,7 +280,7 @@ public class RenderEngine {
             entityRenderer.getEntities().put(entity.getModel(), newEntityList);
         }
 
-        shader.useNormalShader();
+        shader.useEntityShader();
         if (!depthVisualizer)
             shader.setUniform("material", entity.getModel().getMaterial());
         if (!RenderEngine.isDepthVisualizer())
@@ -278,7 +299,7 @@ public class RenderEngine {
             terrainRenderer.getBlocks().put(block.getModel(), newBlockList);
         }
 
-        shader.useNormalShader();
+        shader.useTerrainShader();
         if (!depthVisualizer)
             shader.setUniform("material", block.getModel().getMaterial());
         if (!RenderEngine.isDepthVisualizer())
