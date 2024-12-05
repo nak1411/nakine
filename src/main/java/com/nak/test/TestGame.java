@@ -14,6 +14,7 @@ import com.nak.core.opengl.Loader;
 import com.nak.core.opengl.Model;
 import com.nak.core.opengl.ModelLoader;
 import com.nak.core.rendering.RenderEngine;
+import com.nak.core.terrain.Block;
 import com.nak.core.terrain.Chunk;
 import com.nak.core.textures.Texture;
 import com.nak.core.util.Constants;
@@ -26,6 +27,8 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL30;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class TestGame implements Logic {
@@ -41,13 +44,18 @@ public class TestGame implements Logic {
 
     private Chunk chunk;
 
-    private Model lightWidget;
+    private Model lightWidget, cube, outline;
 
     private Camera camera;
     Vector3f cameraInc;
     float increment;
     private Vector2f displVec;
     private Vector2f rotVec;
+
+    private List<Vector3f> usedPos = new ArrayList<>();
+    private List<Chunk> chunks = new ArrayList<>();
+    ImFloat blockScale = new ImFloat(1);
+    int id = 0;
 
     public TestGame() throws Exception {
         renderer = new RenderEngine();
@@ -65,19 +73,38 @@ public class TestGame implements Logic {
     public void init() throws Exception {
         renderer.init();
 
-        chunk = new Chunk(sceneManager, loader);
+        // Create models/terrain
+        cube = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);
+        cube.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
+        cube.getMaterial().setDisableCulling(false);
+        outline = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);
+        outline.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
+        outline.getMaterial().setDisableCulling(false);
+
+        // Gen terrain
         new Thread(() -> {
             while (!GLFW.glfwWindowShouldClose(window.getWindow())) {
-                chunk.renderThreadOne();
+                for (int x = (int) (Camera.getPosition().x - Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; x < (Camera.getPosition().x + Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; x++) {
+                    id += x;
+                    for (int z = (int) (Camera.getPosition().z - Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; z < (Camera.getPosition().z + Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; z++) {
+                        id += z / 2;
+                        if (!usedPos.contains(new Vector3f(x * Constants.CHUNK_SIZE, 0, z * Constants.CHUNK_SIZE))) {
+
+                            List<Block> blocks = new ArrayList<>();
+                            for (int i = 0; i < Constants.CHUNK_SIZE; i++) {
+                                for (int j = 0; j < Constants.CHUNK_SIZE; j++) {
+                                    blocks.add(new Block(cube, new Vector3f((x * Constants.CHUNK_SIZE) + i, 0, (z * Constants.CHUNK_SIZE) + j), new Vector3f(0, 0, 0), blockScale));
+                                }
+                            }
+                            chunks.add(new Chunk(blocks, new Vector3f(x * Constants.CHUNK_SIZE, 0, z * Constants.CHUNK_SIZE)));
+                            usedPos.add(new Vector3f(x * Constants.CHUNK_SIZE, 0, z * Constants.CHUNK_SIZE));
+                        }
+                    }
+                }
             }
         }).start();
 
-        new Thread(() -> {
-            while (!GLFW.glfwWindowShouldClose(window.getWindow())) {
-                chunk.renderThreadTwo();
-            }
-        }).start();
-
+        // Create lights
         lightWidget = ModelLoader.loadModel(loader, "/models/TestCube.obj");
         lightWidget.getMaterial().setDisableCulling(false);
         lightWidget.setTexture(new Texture(loader.loadTexture("textures/missingtexture.png")), 1.0f);
@@ -143,9 +170,11 @@ public class TestGame implements Logic {
 //        sceneManager.getDirectionalLight().getDirection().x = (float) Math.sin(angRad);s
 //        sceneManager.getDirectionalLight().getDirection().y = (float) Math.cos(angRad);
 
-        for (int i = 0; i < sceneManager.getEntities().size(); i++) {
-            int distX = (int) (Camera.getPosition().x - sceneManager.getEntities().get(i).getPos().x);
-            int distZ = (int) (Camera.getPosition().z - sceneManager.getEntities().get(i).getPos().z);
+
+        for (int i = 0; i < chunks.size(); i++) {
+            Vector3f origin = chunks.get(i).getOrigin();
+            int distX = (int) (Camera.getPosition().x - origin.x);
+            int distZ = (int) (Camera.getPosition().z - origin.z);
 
             if (distX < 0)
                 distX = -distX;
@@ -153,11 +182,16 @@ public class TestGame implements Logic {
                 distZ = -distZ;
 
             if ((distX <= Constants.NUM_ENTITIES.get()) && (distZ <= Constants.NUM_ENTITIES.get())) {
-                renderer.processEntities(sceneManager.getEntities().get(i));
+                for (int j = 0; j < chunks.get(i).getBlocks().size(); j++)
+                    renderer.processChunks(chunks.get(i).getBlocks().get(j));
             }
+        }
 
+        for (int i = 0; i < sceneManager.getEntities().size(); i++) {
+            renderer.processEntities(sceneManager.getEntities().get(i));
             if (sceneManager.getEntities().get(i).getModel() == lightWidget)
                 sceneManager.getEntities().get(i).setPos(new Vector3f(sceneManager.getDirectionalLight().getDirection().x, sceneManager.getDirectionalLight().getDirection().y, sceneManager.getDirectionalLight().getDirection().z));
+
         }
 
         for (int i = 0; i < sceneManager.getOutlines().size(); i++) {

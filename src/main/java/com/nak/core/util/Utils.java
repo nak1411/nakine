@@ -2,6 +2,7 @@ package com.nak.core.util;
 
 import com.nak.core.entities.Camera;
 import com.nak.core.entities.Entity;
+import com.nak.core.terrain.Block;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -17,6 +18,17 @@ public class Utils {
                 rotateY((float) Math.toRadians(entity.getRotation().y)).
                 rotateZ((float) Math.toRadians(entity.getRotation().z)).
                 scale(entity.getScale().get());
+        return matrix;
+    }
+
+    public static Matrix4f createTransformationMatrix(Block block) {
+        Matrix4f matrix = new Matrix4f();
+        transformationMatrix = matrix;
+        matrix.identity().translate(block.getPos()).
+                rotateX((float) Math.toRadians(block.getRotation().x)).
+                rotateY((float) Math.toRadians(block.getRotation().y)).
+                rotateZ((float) Math.toRadians(block.getRotation().z)).
+                scale(block.getScale().get());
         return matrix;
     }
 

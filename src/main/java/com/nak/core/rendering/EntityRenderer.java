@@ -123,7 +123,7 @@ public class EntityRenderer implements Renderer {
         GL30.glBindVertexArray(model.getVaoID());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
-        //GL30.glEnableVertexAttribArray(2);
+        GL30.glEnableVertexAttribArray(2);
 
         if (model.getMaterial().isDisableCulling())
             RenderEngine.disableCulling();
@@ -139,7 +139,7 @@ public class EntityRenderer implements Renderer {
     public void unbind() {
         GL30.glDisableVertexAttribArray(0);
         GL30.glDisableVertexAttribArray(1);
-        //GL30.glDisableVertexAttribArray(2);
+        GL30.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
     }
 

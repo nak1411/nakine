@@ -11,6 +11,7 @@ import com.nak.core.entities.Entity;
 import com.nak.core.lighting.PointLight;
 import com.nak.core.lighting.SpotLight;
 import com.nak.core.opengl.Framebuffer;
+import com.nak.core.terrain.Block;
 import com.nak.core.textures.PickingTexture;
 import com.nak.core.util.Constants;
 import com.nak.core.util.Utils;
@@ -37,6 +38,7 @@ public class RenderEngine {
     private final WindowManager window;
     ShaderManager shader;
     private EntityRenderer entityRenderer;
+    private TerrainRenderer terrainRenderer;
     private static Framebuffer framebuffer;
     private PickingTexture pickingTexture;
     private Camera camera;
@@ -47,6 +49,7 @@ public class RenderEngine {
     private static boolean pickingVisualizer = false;
     private int clickedObject;
     private int totalEntities = 0;
+    private int totalBlocks = 0;
     private int totalVertices = 0;
     private static int numLights;
 
@@ -55,11 +58,11 @@ public class RenderEngine {
         window = Launcher.getWindow();
         shader = new ShaderManager();
         entityRenderer = new EntityRenderer();
+        terrainRenderer = new TerrainRenderer();
         framebuffer = new Framebuffer(WindowManager.getWidth(), WindowManager.getHeight());
         pickingTexture = new PickingTexture(WindowManager.getWidth(), WindowManager.getHeight());
         GL30.glViewport(0, 0, WindowManager.getWidth(), WindowManager.getHeight());
     }
-
 
 
     public void init() throws Exception {
@@ -117,7 +120,7 @@ public class RenderEngine {
             MouseInput.get().setMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT, false);
         }
         //RENDER NORMAL PASS
-        renderNormal(clickedObject,camera, scene);
+        renderNormal(clickedObject, camera, scene);
 
         // RENDER OUTLINE PASS
         renderOutlines(clickedObject, camera, scene);
@@ -125,11 +128,12 @@ public class RenderEngine {
         framebuffer.unbind();
     }
 
-    public void renderNormal(int clickedObject,Camera camera, SceneManager scene) {
+    public void renderNormal(int clickedObject, Camera camera, SceneManager scene) {
         clear();
         GL30.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
         GL30.glStencilMask(0xFF);
         entityRenderer.render(clickedObject, shader, camera, scene.getPointLights(), scene.getSpotLights(), scene.getDirectionalLight());
+        terrainRenderer.render(clickedObject, shader, camera, scene.getPointLights(), scene.getSpotLights(), scene.getDirectionalLight());
     }
 
     public void renderOutlines(int clickedObject, Camera camera, SceneManager scene) {
@@ -188,6 +192,10 @@ public class RenderEngine {
         ImGui.text("Entities:");
         ImGui.sameLine(ImGui.getWindowWidth() - 175);
         ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(totalEntities));
+
+        ImGui.text("Blocks:");
+        ImGui.sameLine(ImGui.getWindowWidth() - 175);
+        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(totalBlocks));
 
         ImGui.text("Outline Width");
         ImFloat floatStep = Constants.OUTLINE_SCALE;
@@ -257,12 +265,30 @@ public class RenderEngine {
             shader.setUniform("textureSampler", 0);
     }
 
+    public void processChunks(Block block) {
+        List<Block> blockList = terrainRenderer.getBlocks().get(block.getModel());
+        if (blockList != null) {
+            blockList.add(block);
+            totalBlocks = blockList.size();
+            totalVertices = Block.vertices.length;
+        } else {
+            List<Block> newBlockList = new ArrayList<>();
+            newBlockList.add(block);
+            terrainRenderer.getBlocks().put(block.getModel(), newBlockList);
+        }
+
+        shader.useNormalShader();
+        if (!depthVisualizer)
+            shader.setUniform("material", block.getModel().getMaterial());
+        if (!RenderEngine.isDepthVisualizer())
+            shader.setUniform("textureSampler", 0);
+    }
+
     public void processOutlines(Entity entity) {
         List<Entity> outlineList = entityRenderer.getOutlines().get(entity.getModel());
         if (outlineList != null) {
             outlineList.add(entity);
-        }
-        else {
+        } else {
             List<Entity> newOutlineList = new ArrayList<>();
             newOutlineList.add(entity);
             entityRenderer.getOutlines().put(entity.getModel(), newOutlineList);

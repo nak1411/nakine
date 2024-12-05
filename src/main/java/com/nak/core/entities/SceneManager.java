@@ -3,6 +3,7 @@ package com.nak.core.entities;
 import com.nak.core.lighting.DirectionalLight;
 import com.nak.core.lighting.PointLight;
 import com.nak.core.lighting.SpotLight;
+import com.nak.core.terrain.Block;
 import com.nak.core.util.Constants;
 import org.joml.Vector3f;
 
@@ -15,7 +16,7 @@ public class SceneManager {
 
     private List<Entity> entities;
     private List<Entity> outlines;
-    //private List<Terrain> terrains;
+    private List<Block> blocks;
 
     private Vector3f ambientLight;
     private SpotLight[] spotLights;
@@ -28,7 +29,7 @@ public class SceneManager {
     public SceneManager(float lightAngle) {
         entities = Collections.synchronizedList(new ArrayList<>());
         outlines = Collections.synchronizedList(new ArrayList<>());
-        //terrains = new ArrayList<>();
+        blocks = Collections.synchronizedList(new ArrayList<>());
         ambientLight = Constants.AMBIENT_COLOR;
         this.lightAngle = lightAngle;
     }
@@ -39,6 +40,10 @@ public class SceneManager {
 
     public List<Entity> getOutlines() {
         return outlines;
+    }
+
+    public List<Block> getBlocks() {
+        return blocks;
     }
 
     public void setEntities(List<Entity> entities) {
@@ -55,6 +60,14 @@ public class SceneManager {
 
     public void addOutline(Entity outline) {
         this.outlines.add(outline);
+    }
+
+    public void setBlocks(List<Block> blocks) {
+        this.blocks = blocks;
+    }
+
+    public void addBlock(Block block) {
+        this.blocks.add(block);
     }
 
     public Vector3f getAmbientLight() {
