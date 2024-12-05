@@ -244,6 +244,7 @@ public class RenderEngine {
 
     public void cleanup() {
         entityRenderer.cleanup();
+        terrainRenderer.cleanup();
     }
 
     public void processEntities(Entity entity) {

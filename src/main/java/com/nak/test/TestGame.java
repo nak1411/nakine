@@ -75,10 +75,10 @@ public class TestGame implements Logic {
 
         // Create models/terrain
         cube = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);
-        cube.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
-        cube.getMaterial().setDisableCulling(false);
+        cube.setTexture(new Texture(loader.loadTexture("textures/grass_block.png")), 1.0f);
+        cube.getMaterial().setDisableCulling(true);
         outline = loader.loadModel(Block.vertices, Block.texturePos, Block.indices);
-        outline.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")), 1.0f);
+        outline.setTexture(new Texture(loader.loadTexture("textures/grass_block.png")), 1.0f);
         outline.getMaterial().setDisableCulling(false);
 
         // Gen terrain

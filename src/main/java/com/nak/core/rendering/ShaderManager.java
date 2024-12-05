@@ -11,11 +11,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL40;
-import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
-import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -34,22 +31,22 @@ public class ShaderManager {
     public void createShaders() {
         // Create vertex shader
         vertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
-        GL30.glShaderSource(vertexShader, FileUtils.loadShaderFile("/shaders/basic_shader.shader")[0]);
+        GL30.glShaderSource(vertexShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[0]);
         GL30.glCompileShader(vertexShader);
         checkShaderErrors(vertexShader, "VERTEX");
         // Create fragment shader
         fragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
-        GL30.glShaderSource(fragmentShader, FileUtils.loadShaderFile("/shaders/basic_shader.shader")[1]);
+        GL30.glShaderSource(fragmentShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[1]);
         GL30.glCompileShader(fragmentShader);
         checkShaderErrors(fragmentShader, "FRAGMENT");
         // Create vertex outline shader
         outlineVertexShader = GL30.glCreateShader(GL30.GL_VERTEX_SHADER);
-        GL30.glShaderSource(outlineVertexShader, FileUtils.loadShaderFile("/shaders/basic_shader.shader")[2]);
+        GL30.glShaderSource(outlineVertexShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[2]);
         GL30.glCompileShader(outlineVertexShader);
         checkShaderErrors(outlineVertexShader, "OUTLINE_VERTEX");
         // Create fragment outline shader
         outlineFragmentShader = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER);
-        GL30.glShaderSource(outlineFragmentShader, FileUtils.loadShaderFile("/shaders/basic_shader.shader")[3]);
+        GL30.glShaderSource(outlineFragmentShader, FileUtils.loadShaderFile("/shaders/entity_shader.shader")[3]);
         GL30.glCompileShader(outlineFragmentShader);
         checkShaderErrors(outlineFragmentShader, "OUTLINE_FRAGMENT");
         // Create vertex picking shader
