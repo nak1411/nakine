@@ -1,15 +1,12 @@
 package com.nak.core.rendering;
 
-import com.nak.core.WindowManager;
 import com.nak.core.entities.Camera;
 import com.nak.core.entities.Entity;
 import com.nak.core.io.KeyInput;
-import com.nak.core.io.MouseInput;
 import com.nak.core.lighting.DirectionalLight;
 import com.nak.core.lighting.PointLight;
 import com.nak.core.lighting.SpotLight;
 import com.nak.core.opengl.Model;
-import com.nak.core.opengl.ModelLoader;
 import com.nak.core.util.Constants;
 import com.nak.core.util.Utils;
 import com.nak.test.Launcher;
@@ -19,7 +16,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +26,7 @@ public class EntityRenderer implements Renderer {
     private Map<Model, List<Entity>> outlines;
 
     private Entity selectedEntity = null;
+    private int totalVertices = 0;
 
     public EntityRenderer() throws Exception {
         entities = new HashMap<>();
@@ -49,6 +46,7 @@ public class EntityRenderer implements Renderer {
             bind(model);
             List<Entity> entityList = entities.get(model);
             for (Entity entity : entityList) {
+                totalVertices = entity.getModel().getVertexCount();
                 if (entity.getUid() == clickedObject) {
                     selectedEntity = entity;
                     // Movement
@@ -58,7 +56,7 @@ public class EntityRenderer implements Renderer {
                     entity.setScale(selectedEntity.getScale());
                 }
                 prepareNormalTransform(shader, entity, camera);
-                int renderMode = GL11.GL_TRIANGLES;
+                int renderMode;
                 if (RenderEngine.isWireframe())
                     renderMode = GL11.GL_LINE_LOOP;
                 else
@@ -152,10 +150,10 @@ public class EntityRenderer implements Renderer {
 
     public void prepareNormalTransform(ShaderManager shader, Object entity, Camera camera) {
         shader.useEntityShader();
-        shader.setUniform("projectionMatrix", Launcher.getWindow().updateProjectionMatrix());
-        shader.setUniform("viewMatrix", Utils.getViewMatrix(camera));
+        shader.setUniform("projectionMatrixEntity", Launcher.getWindow().updateProjectionMatrix());
+        shader.setUniform("viewMatrixEntity", Utils.getViewMatrix(camera));
         shader.setUniform("depthVisualizer", RenderEngine.isDepthVisualizer() ? 1 : 0);
-        shader.setUniform("transformationMatrix", Utils.createTransformationMatrix((Entity) entity));
+        shader.setUniform("transformationMatrixEntity", Utils.createTransformationMatrix((Entity) entity));
     }
 
     public void prepareOutlineTransform(ShaderManager shader, Object entity, Camera camera) {
@@ -183,5 +181,9 @@ public class EntityRenderer implements Renderer {
 
     public Map<Model, List<Entity>> getOutlines() {
         return outlines;
+    }
+
+    public int getTotalVertices() {
+        return totalVertices;
     }
 }

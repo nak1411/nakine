@@ -33,6 +33,13 @@ public class Loader {
         return new Model(vaoID, indices.length);
     }
 
+    public Model loadModel(float[] vertices, float[] textureCoords) {
+        int vaoID = setupVAO();
+        setupVBO(0, 3, vertices);
+        setupVBO(1, 2, textureCoords);
+        return new Model(vaoID, vertices.length);
+    }
+
     public int loadTexture(String filename) {
         int width, height;
         ByteBuffer buffer;
@@ -62,7 +69,7 @@ public class Loader {
         // Mip Mapping
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
         GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR_MIPMAP_LINEAR);
-        GL30.glTexParameterf(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_LOD_BIAS, 0);
+        GL30.glTexParameterf(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_LOD_BIAS, -2);
 
         // Anisotropic filtering
         float amount = Math.min(4.0f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));

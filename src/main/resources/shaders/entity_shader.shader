@@ -8,15 +8,15 @@ out vec2 outTextureCoord;
 out vec3 outNormal;
 out vec3 outPos;
 
-uniform mat4 transformationMatrix;
-uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
+uniform mat4 transformationMatrixEntity;
+uniform mat4 projectionMatrixEntity;
+uniform mat4 viewMatrixEntity;
 
 void main()
 {
-    vec4 worldPos = transformationMatrix * vec4(aPos, 1.0);
-    gl_Position = projectionMatrix * viewMatrix * worldPos;
-    outNormal = normalize(transformationMatrix * vec4(normal, 0.0)).xyz;
+    vec4 worldPos = transformationMatrixEntity * vec4(aPos, 1.0);
+    gl_Position = projectionMatrixEntity * viewMatrixEntity * worldPos;
+    outNormal = normalize(transformationMatrixEntity * vec4(normal, 0.0)).xyz;
     outPos = worldPos.xyz;
     outTextureCoord = aTexCoord;
 }

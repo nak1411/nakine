@@ -2,11 +2,11 @@ package com.nak.core.rendering;
 
 import com.nak.core.WindowManager;
 import com.nak.core.entities.Camera;
+import com.nak.core.entities.Entity;
 import com.nak.core.entities.SceneManager;
 import com.nak.core.io.KeyInput;
 import com.nak.core.io.MouseInput;
 import com.nak.core.lighting.DirectionalLight;
-import com.nak.core.entities.Entity;
 import com.nak.core.lighting.PointLight;
 import com.nak.core.lighting.SpotLight;
 import com.nak.core.opengl.Framebuffer;
@@ -21,7 +21,8 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RenderEngine {
 
@@ -38,8 +39,6 @@ public class RenderEngine {
     private static boolean depthVisualizer = false;
     private static boolean pickingVisualizer = false;
     private int clickedObject;
-    private int totalEntities = 0;
-    private int totalBlocks = 0;
     private int totalVertices = 0;
     private static int numLights;
 
@@ -66,12 +65,12 @@ public class RenderEngine {
         createPickingShader();
     }
 
-    private void createEntityShader() throws Exception{
+    private void createEntityShader() throws Exception {
         shader.useEntityShader();
         shader.createUniform("depthVisualizer", shader.getEntityShaderProgram());
-        shader.createUniform("transformationMatrix", shader.getEntityShaderProgram());
-        shader.createUniform("projectionMatrix", shader.getEntityShaderProgram());
-        shader.createUniform("viewMatrix", shader.getEntityShaderProgram());
+        shader.createUniform("transformationMatrixEntity", shader.getEntityShaderProgram());
+        shader.createUniform("projectionMatrixEntity", shader.getEntityShaderProgram());
+        shader.createUniform("viewMatrixEntity", shader.getEntityShaderProgram());
         shader.createUniform("textureSampler", shader.getEntityShaderProgram());
         shader.createUniform("ambientLight", shader.getEntityShaderProgram());
         shader.createMaterialUniform("material", shader.getEntityShaderProgram());
@@ -81,7 +80,7 @@ public class RenderEngine {
         shader.createSpotLightListUniform("spotLights", 5, shader.getEntityShaderProgram());
     }
 
-    private void createTerrainShader() throws Exception{
+    private void createTerrainShader() throws Exception {
         shader.useTerrainShader();
         shader.createUniform("depthVisualizer", shader.getTerrainShaderProgram());
         shader.createUniform("transformationMatrixTerrain", shader.getTerrainShaderProgram());
@@ -96,7 +95,7 @@ public class RenderEngine {
         shader.createSpotLightListUniform("spotLights", 5, shader.getTerrainShaderProgram());
     }
 
-    private void createOutlineShader() throws Exception{
+    private void createOutlineShader() throws Exception {
         shader.useOutlineShader();
         shader.createUniform("transformationMatrix", shader.getOutlineShaderProgram());
         shader.createUniform("projectionMatrix", shader.getOutlineShaderProgram());
@@ -105,7 +104,7 @@ public class RenderEngine {
         shader.createUniform("outlineColor", shader.getOutlineShaderProgram());
     }
 
-    private void createPickingShader() throws Exception{
+    private void createPickingShader() throws Exception {
         shader.usePickingShader();
         shader.createUniform("transformationMatrix", shader.getShaderPickingProgram());
         shader.createUniform("projectionMatrix", shader.getShaderPickingProgram());
@@ -128,7 +127,6 @@ public class RenderEngine {
         WindowManager.setResize(false);
 
         // RENDER PICKING PASS
-        shader.usePickingShader();
         if (RenderEngine.isPickingVisualizer())
             renderPicking(camera, scene);
 
@@ -137,11 +135,9 @@ public class RenderEngine {
             MouseInput.get().setMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT, false);
         }
         //RENDER NORMAL PASS
-
         renderNormal(clickedObject, camera, scene);
 
         // RENDER OUTLINE PASS
-        shader.useOutlineShader();
         renderOutlines(clickedObject, camera, scene);
 
         framebuffer.unbind();
@@ -158,6 +154,7 @@ public class RenderEngine {
     }
 
     public void renderOutlines(int clickedObject, Camera camera, SceneManager scene) {
+        shader.useOutlineShader();
         GL30.glStencilFunc(GL11.GL_NOTEQUAL, 1, 0xFF);
         GL30.glStencilMask(0x00);
         GL30.glDisable(GL11.GL_DEPTH_TEST);
@@ -168,6 +165,7 @@ public class RenderEngine {
     }
 
     public void renderPicking(Camera camera, SceneManager scene) {
+        shader.usePickingShader();
         GL30.glDisable(GL11.GL_STENCIL_TEST);
         pickingTexture.enableWriting();
         GL30.glClearColor(0, 0, 0, 1);
@@ -212,11 +210,11 @@ public class RenderEngine {
 
         ImGui.text("Entities:");
         ImGui.sameLine(ImGui.getWindowWidth() - 175);
-        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(totalEntities));
+        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(entityRenderer.getEntities().size()));
 
-        ImGui.text("Blocks:");
+        ImGui.text("Chunks:");
         ImGui.sameLine(ImGui.getWindowWidth() - 175);
-        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(totalBlocks));
+        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(terrainRenderer.getBlocks().size()));
 
         ImGui.text("Outline Width");
         ImFloat floatStep = Constants.OUTLINE_SCALE;
@@ -225,7 +223,7 @@ public class RenderEngine {
 
         ImGui.text("Total Vertices:");
         ImGui.sameLine(ImGui.getWindowWidth() - 175);
-        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(totalVertices * totalEntities));
+        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf((terrainRenderer.getTotalVertices() + entityRenderer.getTotalVertices()) * (entityRenderer.getEntities().size() + terrainRenderer.getBlocks().size())));
 
         ImGui.text("Camera Position:");
         ImGui.sameLine(ImGui.getWindowWidth() - 175);
@@ -272,8 +270,6 @@ public class RenderEngine {
         List<Entity> entityList = entityRenderer.getEntities().get(entity.getModel());
         if (entityList != null) {
             entityList.add(entity);
-            totalEntities = entityList.size();
-            totalVertices = entity.getModel().getVertexCount();
         } else {
             List<Entity> newEntityList = new ArrayList<>();
             newEntityList.add(entity);
@@ -291,8 +287,6 @@ public class RenderEngine {
         List<Block> blockList = terrainRenderer.getBlocks().get(block.getModel());
         if (blockList != null) {
             blockList.add(block);
-            totalBlocks = blockList.size();
-            totalVertices = Block.vertices.length;
         } else {
             List<Block> newBlockList = new ArrayList<>();
             newBlockList.add(block);
