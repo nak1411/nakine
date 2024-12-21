@@ -10,13 +10,15 @@ public class Block {
     private Model model;
     private ImFloat scale;
 
-    public static enum TYPE {
-        DIRT, GRASS;
-    }
+    public static int GRASS = 0;
+    public static int DIRT = 1;
+    public static int STONE = 2;
+    public static int BARK = 3;
+    public static int LEAF = 4;
 
-    public TYPE type;
+    public int type;
 
-    public Block(Model model, Vector3f pos, Vector3f rotation, ImFloat scale, TYPE type) {
+    public Block(Model model, Vector3f pos, Vector3f rotation, ImFloat scale, int type) {
         this.model = model;
         this.pos = pos;
         this.rotation = rotation;

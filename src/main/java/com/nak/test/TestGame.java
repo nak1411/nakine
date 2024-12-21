@@ -20,6 +20,7 @@ import com.nak.core.terrain.Chunk;
 import com.nak.core.terrain.ChunkMesh;
 import com.nak.core.textures.Texture;
 import com.nak.core.util.Constants;
+import com.nak.core.util.PerlinNoiseGen;
 import imgui.type.ImFloat;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -39,6 +40,7 @@ public class TestGame implements Logic {
     private final KeyInput keyInput;
     private final Loader loader;
     private ImGuiLayer imGuiLayer;
+    private PerlinNoiseGen perlinNoiseGen;
 
     private Chunk chunk;
 
@@ -53,7 +55,8 @@ public class TestGame implements Logic {
 
     private List<Vector3f> usedPos = new ArrayList<>();
     private List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<>());
-    ImFloat blockScale = new ImFloat(0.5f);
+    private ImFloat blockScale = new ImFloat(1.0f);
+    private static int BLOCK_TYPE = Block.GRASS;
     int id = 0;
 
     public TestGame() throws Exception {
@@ -66,29 +69,23 @@ public class TestGame implements Logic {
         loader = new Loader();
         displVec = new Vector2f();
         rotVec = new Vector2f();
+        perlinNoiseGen = new PerlinNoiseGen();
     }
 
     @Override
     public void init() throws Exception {
         renderer.init();
 
-//        // Create models/terrain
-//        cube = loader.loadModel(BlockModel.vertices, BlockModel.texturePos, BlockModel.indices);
-//        cube.setTexture(new Texture(loader.loadTexture("textures/grass_block.png")), 1.0f);
-//        cube.getMaterial().setDisableCulling(false);
-
         // Gen terrain
         new Thread(() -> {
             while (!GLFW.glfwWindowShouldClose(window.getWindow())) {
                 for (int x = (int) (Camera.getPosition().x - Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; x < (Camera.getPosition().x + Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; x++) {
-                    id += x;
                     for (int z = (int) (Camera.getPosition().z - Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; z < (Camera.getPosition().z + Constants.NUM_ENTITIES.get()) / Constants.CHUNK_SIZE; z++) {
-                        id += z / 2;
                         if (!usedPos.contains(new Vector3f(x * Constants.CHUNK_SIZE, 0, z * Constants.CHUNK_SIZE))) {
                             List<Block> l_blocks = new ArrayList<>();
                             for (int i = 0; i < Constants.CHUNK_SIZE; i++) {
                                 for (int j = 0; j < Constants.CHUNK_SIZE; j++) {
-                                    l_blocks.add(new Block(cube, new Vector3f(i, 0, j), new Vector3f(0, 0, 0), blockScale, Block.TYPE.GRASS));
+                                    l_blocks.add(new Block(cube, new Vector3f(i, perlinNoiseGen.generateHeight(i + (x * Constants.CHUNK_SIZE), j + (z * Constants.CHUNK_SIZE)), j), new Vector3f(0, 0, 0), blockScale, BLOCK_TYPE));
                                 }
                             }
 
@@ -101,15 +98,6 @@ public class TestGame implements Logic {
                 }
             }
         }).start();
-
-//        List<Block> l_blocks = new ArrayList<>();
-//        for (int x = 0; x < 10; x++) {
-//            for (int y = 0; y < 10; y++) {
-//                for (int z = 0; z < 10; z++) {
-//                    l_blocks.add(new Block(cube, new Vector3f(x, y, z), new Vector3f(0, 0, 0), blockScale, Block.TYPE.GRASS));
-//                }
-//            }
-//        }
 
         // Create lights
         lightWidget = ModelLoader.loadModel(loader, "/models/TestCube.obj");
@@ -177,9 +165,10 @@ public class TestGame implements Logic {
         // Add blocks
         if (index < chunks.size()) {
             cube = loader.loadModel(chunks.get(index).positions, chunks.get(index).texturePos);
-            cube.setTexture(new Texture(loader.loadTexture("textures/missingtexture.png")), 1.0f);
+            cube.setTexture(new Texture(loader.loadTexture("textures/default_pack.png")), 1.0f);
             cube.getMaterial().setDisableCulling(true);
-            sceneManager.addBlock(new Block(cube, chunks.get(index).chunk.origin, new Vector3f(0, 0, 0), blockScale, Block.TYPE.GRASS));
+            sceneManager.addBlock(new Block(cube, chunks.get(index).chunk.origin, new Vector3f(0, 0, 0), blockScale, BLOCK_TYPE));
+            //System.out.println(chunks.);
 
             chunks.get(index).positions = null;
             chunks.get(index).normals = null;

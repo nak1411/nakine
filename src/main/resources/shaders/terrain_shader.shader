@@ -7,18 +7,27 @@ layout (location = 2) in vec3 normal;
 out vec2 outTextureCoord;
 out vec3 outNormal;
 out vec3 outPos;
+out float visibility;
 
 uniform mat4 transformationMatrixTerrain;
 uniform mat4 projectionMatrixTerrain;
 uniform mat4 viewMatrixTerrain;
+uniform float fogDensity;
+uniform float fogGradient;
 
 void main()
 {
     vec4 worldPos = transformationMatrixTerrain * vec4(aPos, 1.0);
-    gl_Position = projectionMatrixTerrain * viewMatrixTerrain * worldPos;
+    vec4 positionRelativeToCam = viewMatrixTerrain * worldPos;
+    gl_Position = projectionMatrixTerrain * positionRelativeToCam;
+
     outNormal = normalize(transformationMatrixTerrain * vec4(normal, 1.0)).xyz;
     outPos = worldPos.xyz;
     outTextureCoord = aTexCoord;
+
+    float distance = length(positionRelativeToCam.xyz);
+    visibility = exp(-pow((distance * fogDensity), fogGradient));
+    visibility = clamp(visibility, 0.0, 1.0);
 }
 
 #SHADER_FRAG
@@ -32,6 +41,7 @@ out vec4 color;
 in vec2 outTextureCoord;
 in vec3 outNormal;
 in vec3 outPos;
+in float visibility;
 
 struct Material {
     vec4 ambient;
@@ -69,9 +79,10 @@ uniform float specularPower;
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
+uniform vec4 skyColor;
 
 uniform int depthVisualizer;
-
+uniform int enableFog;
 
 vec4 ambientC;
 vec4 diffuseC;
@@ -164,11 +175,21 @@ void main()
         }
     }
 
+    //Transparency
+    vec4 textureColor = texture(textureSampler, outTextureCoord);
+    if (textureColor.a < 0.5){
+        discard;
+    }
+
     // Enable/disable depth visualizer
     if (depthVisualizer == 1){
         float depth = LinearizeDepth(gl_FragCoord.z) / far;
         color = vec4(vec3(depth), 1.0);
     } else {
-        color = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
+        color = ambientC * vec4(ambientLight, 1) * textureColor + diffuseSpecularComp;
+        if (enableFog == 1){
+            // Mix fog visibility
+            color = mix(vec4(skyColor.xyz, 1.0), color, visibility);
+        }
     }
 }

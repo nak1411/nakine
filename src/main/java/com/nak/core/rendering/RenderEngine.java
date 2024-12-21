@@ -38,7 +38,9 @@ public class RenderEngine {
     private static boolean isWireframe = false;
     private static boolean depthVisualizer = false;
     private static boolean pickingVisualizer = false;
+    private static boolean enableFog = true;
     private int clickedObject;
+    int clicked = 0;
     private int totalVertices = 0;
     private static int numLights;
 
@@ -93,6 +95,10 @@ public class RenderEngine {
         shader.createDirectionalLightUniform("directionalLight", shader.getTerrainShaderProgram());
         shader.createPointLightListUniform("pointLights", 5, shader.getTerrainShaderProgram());
         shader.createSpotLightListUniform("spotLights", 5, shader.getTerrainShaderProgram());
+        shader.createUniform("skyColor", shader.getTerrainShaderProgram());
+        shader.createUniform("enableFog", shader.getTerrainShaderProgram());
+        shader.createUniform("fogDensity", shader.getTerrainShaderProgram());
+        shader.createUniform("fogGradient", shader.getTerrainShaderProgram());
     }
 
     private void createOutlineShader() throws Exception {
@@ -150,6 +156,9 @@ public class RenderEngine {
         shader.useEntityShader();
         entityRenderer.render(clickedObject, shader, camera, scene.getPointLights(), scene.getSpotLights(), scene.getDirectionalLight());
         shader.useTerrainShader();
+        shader.setUniform("skyColor", Constants.CLEAR_COLOR);
+        shader.setUniform("fogDensity", Constants.FOG_DENSITY);
+        shader.setUniform("fogGradient", Constants.FOG_GRADIENT);
         terrainRenderer.render(clickedObject, shader, camera, scene.getPointLights(), scene.getSpotLights(), scene.getDirectionalLight());
     }
 
@@ -223,7 +232,7 @@ public class RenderEngine {
 
         ImGui.text("Total Vertices:");
         ImGui.sameLine(ImGui.getWindowWidth() - 175);
-        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf((terrainRenderer.getTotalVertices() + entityRenderer.getTotalVertices()) * (entityRenderer.getEntities().size() + terrainRenderer.getBlocks().size())));
+        ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf((terrainRenderer.getTotalVertices() + entityRenderer.getTotalVertices())));
 
         ImGui.text("Camera Position:");
         ImGui.sameLine(ImGui.getWindowWidth() - 175);
@@ -248,6 +257,19 @@ public class RenderEngine {
 
         ImGui.text("Key Pressed:");
         ImGui.textColored(0.0f, 1.0f, 1.0f, 1.0f, String.valueOf(KeyInput.getCurrentKey()));
+
+
+        if (ImGui.button("Toggle Fog"))
+            enableFog = !enableFog;
+
+        ImFloat fogDensityFloatStep = Constants.FOG_DENSITY;
+        ImGui.inputFloat("Fog Density", fogDensityFloatStep, 0.001f, 0.01f, "%.3f", ImGuiInputTextFlags.EnterReturnsTrue);
+        Constants.FOG_DENSITY.set(fogDensityFloatStep);
+
+        ImFloat fogGradientFloatStep = Constants.FOG_GRADIENT;
+        ImGui.inputFloat("Fog Gradient", fogGradientFloatStep, 0.1f, 1.0f, "%.2f", ImGuiInputTextFlags.EnterReturnsTrue);
+        Constants.FOG_GRADIENT.set(fogGradientFloatStep);
+
 
         ImGui.separator();
 
@@ -294,10 +316,16 @@ public class RenderEngine {
         }
 
         shader.useTerrainShader();
+
+
         if (!depthVisualizer)
             shader.setUniform("material", block.getModel().getMaterial());
         if (!RenderEngine.isDepthVisualizer())
             shader.setUniform("textureSampler", 0);
+        if (!enableFog)
+            shader.setUniform("enableFog", 0);
+        else
+            shader.setUniform("enableFog", 1);
     }
 
     public void processOutlines(Entity entity) {

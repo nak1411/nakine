@@ -5,58 +5,59 @@ import org.joml.Vector3f;
 
 public class BlockModel {
     public static Vector3f[] PX_POS = {
-            new Vector3f(1.0f, 1.0f, -1.0f),
-            new Vector3f(1.0f, -1.0f, -1.0f),
-            new Vector3f(1.0f, -1.0f, 1.0f),
-            new Vector3f(1.0f, -1.0f, 1.0f),
-            new Vector3f(1.0f, 1.0f, 1.0f),
-            new Vector3f(1.0f, 1.0f, -1.0f),
+            new Vector3f(0.5f,0.5f,-0.5f),
+            new Vector3f(0.5f,-0.5f,-0.5f),
+            new Vector3f(0.5f,-0.5f,0.5f),
+            new Vector3f(0.5f,-0.5f,0.5f),
+            new Vector3f(0.5f,0.5f,0.5f),
+            new Vector3f(0.5f,0.5f,-0.5f)
     };
 
     public static Vector3f[] NX_POS = {
-            new Vector3f(-1.0f, 1.0f, -1.0f),
-            new Vector3f(-1.0f, -1.0f, -1.0f),
-            new Vector3f(-1.0f, -1.0f, 1.0f),
-            new Vector3f(-1.0f, -1.0f, 1.0f),
-            new Vector3f(-1.0f, 1.0f, 1.0f),
-            new Vector3f(-1.0f, 1.0f, -1.0f)
+            new Vector3f(-0.5f,0.5f,-0.5f),
+            new Vector3f(-0.5f,-0.5f,-0.5f),
+            new Vector3f(-0.5f,-0.5f,0.5f),
+            new Vector3f(-0.5f,-0.5f,0.5f),
+            new Vector3f(-0.5f,0.5f,0.5f),
+            new Vector3f(-0.5f,0.5f,-0.5f)
     };
 
     public static Vector3f[] PY_POS = {
-            new Vector3f(-1.0f, 1.0f, 1.0f),
-            new Vector3f(-1.0f, 1.0f, -1.0f),
-            new Vector3f(1.0f, 1.0f, -1.0f),
-            new Vector3f(1.0f, 1.0f, -1.0f),
-            new Vector3f(1.0f, 1.0f, 1.0f),
-            new Vector3f(-1.0f, 1.0f, 1.0f)
+            new Vector3f(-0.5f,0.5f,0.5f),
+            new Vector3f(-0.5f,0.5f,-0.5f),
+            new Vector3f(0.5f,0.5f,-0.5f),
+            new Vector3f(0.5f,0.5f,-0.5f),
+            new Vector3f(0.5f,0.5f,0.5f),
+            new Vector3f(-0.5f,0.5f,0.5f)
     };
 
     public static Vector3f[] NY_POS = {
-            new Vector3f(-1.0f, -1.0f, 1.0f),
-            new Vector3f(-1.0f, -1.0f, -1.0f),
-            new Vector3f(1.0f, -1.0f, -1.0f),
-            new Vector3f(1.0f, -1.0f, -1.0f),
-            new Vector3f(1.0f, -1.0f, 1.0f),
-            new Vector3f(-1.0f, -1.0f, 1.0f)
+            new Vector3f(-0.5f,-0.5f,0.5f),
+            new Vector3f(-0.5f,-0.5f,-0.5f),
+            new Vector3f(0.5f,-0.5f,-0.5f),
+            new Vector3f(0.5f,-0.5f,-0.5f),
+            new Vector3f(0.5f,-0.5f,0.5f),
+            new Vector3f(-0.5f,-0.5f,0.5f)
     };
 
     public static Vector3f[] PZ_POS = {
-            new Vector3f(-1.0f, 1.0f, 1.0f),
-            new Vector3f(-1.0f, -1.0f, 1.0f),
-            new Vector3f(1.0f, -1.0f, 1.0f),
-            new Vector3f(1.0f, -1.0f, 1.0f),
-            new Vector3f(1.0f, 1.0f, 1.0f),
-            new Vector3f(-1.0f, 1.0f, 1.0f)
+            new Vector3f(-0.5f,0.5f,0.5f),
+            new Vector3f(-0.5f,-0.5f,0.5f),
+            new Vector3f(0.5f,-0.5f,0.5f),
+            new Vector3f(0.5f,-0.5f,0.5f),
+            new Vector3f(0.5f,0.5f,0.5f),
+            new Vector3f(-0.5f,0.5f,0.5f)
     };
 
     public static Vector3f[] NZ_POS = {
-            new Vector3f(-1.0f, 1.0f, -1.0f),
-            new Vector3f(-1.0f, -1.0f, -1.0f),
-            new Vector3f(1.0f, -1.0f, -1.0f),
-            new Vector3f(1.0f, -1.0f, -1.0f),
-            new Vector3f(1.0f, 1.0f, -1.0f),
-            new Vector3f(-1.0f, 1.0f, -1.0f)
+            new Vector3f(-0.5f,0.5f,-0.5f),
+            new Vector3f(-0.5f,-0.5f,-0.5f),
+            new Vector3f(0.5f,-0.5f,-0.5f),
+            new Vector3f(0.5f,-0.5f,-0.5f),
+            new Vector3f(0.5f,0.5f,-0.5f),
+            new Vector3f(-0.5f,0.5f,-0.5f)
     };
+
 
     public static Vector2f[] TEXTURE_POS = {
             new Vector2f(0.f, 0.f),
@@ -67,6 +68,262 @@ public class BlockModel {
             new Vector2f(0.f, 0.f)
     };
 
+    public static Vector2f[] UV_PX = {
+            // GRASS
+            new Vector2f(1.f / 16.f, 0.f),
+            new Vector2f(1.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f / 16.f),
+            new Vector2f(1.f / 16.f, 0.f),
+
+            // DIRT
+            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f),
+
+            // STONE
+            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f),
+
+            // TREEBARK
+            new Vector2f(4.f / 16.f, 0.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 0.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f),
+
+            // TREELEAF
+            new Vector2f(6.f / 16.f, 0.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 0.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f)
+    };
+
+    public static Vector2f[] UV_NX = {
+            // GRASS
+            new Vector2f(1.f / 16.f, 0.f),
+            new Vector2f(1.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f / 16.f),
+            new Vector2f(1.f / 16.f, 0.f),
+
+            // DIRT
+            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f),
+
+            // STONE
+            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f),
+
+            // TREEBARK
+            new Vector2f(4.f / 16.f, 0.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 0.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f),
+
+            // TREELEAF
+            new Vector2f(6.f / 16.f, 0.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 0.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f)
+    };
+
+
+    public static Vector2f[] UV_PY = {
+            // GRASS
+            new Vector2f(0.f, 0.f),
+            new Vector2f(0.f, 1.f / 16.f),
+            new Vector2f(1.f / 16.f, 1.f / 16.f),
+            new Vector2f(1.f / 16.f, 1.f / 16.f),
+            new Vector2f(1.f / 16.f, 0.f),
+            new Vector2f(0.f, 0.f),
+
+            // DIRT
+            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f),
+
+            // STONE
+            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f),
+
+            // TREEBARK
+            new Vector2f(5.f / 16.f, 0.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f / 16.f),
+            new Vector2f(5.f / 16.f, 0.f),
+
+            // TREELEAF
+            new Vector2f(6.f / 16.f, 0.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 0.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f)
+
+    };
+
+    public static Vector2f[] UV_NY = {
+            // GRASS
+            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f),
+
+            // DIRT
+            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f),
+
+            // STONE
+            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f),
+
+            // TREEBARK
+            new Vector2f(5.f / 16.f, 0.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f / 16.f),
+            new Vector2f(5.f / 16.f, 0.f),
+
+            // TREELEAF
+            new Vector2f(6.f / 16.f, 0.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 0.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f)
+    };
+
+    public static Vector2f[] UV_PZ = {
+            // GRASS
+            new Vector2f(1.f / 16.f, 0.f),
+            new Vector2f(1.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f / 16.f),
+            new Vector2f(1.f / 16.f, 0.f),
+
+            // DIRT
+            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f),
+
+            // STONE
+            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f),
+
+            // TREEBARK
+            new Vector2f(4.f / 16.f, 0.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 0.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f),
+
+            // TREELEAF
+            new Vector2f(6.f / 16.f, 0.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 0.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f)
+    };
+
+
+    public static Vector2f[] UV_NZ = {
+            // GRASS
+            new Vector2f(1.f / 16.f, 0.f),
+            new Vector2f(1.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f / 16.f),
+            new Vector2f(1.f / 16.f, 0.f),
+
+            // DIRT
+            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f(2.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f / 16.f),
+            new Vector2f(2.f / 16.f, 0.f),
+
+            // STONE
+            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f(3.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f / 16.f),
+            new Vector2f(3.f / 16.f, 0.f),
+
+            // TREEBARK
+            new Vector2f(4.f / 16.f, 0.f),
+            new Vector2f(4.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 1.f / 16.f),
+            new Vector2f(5.f / 16.f, 0.f / 16.f),
+            new Vector2f(4.f / 16.f, 0.f),
+
+            // TREELEAF
+            new Vector2f(6.f / 16.f, 0.f),
+            new Vector2f(6.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 1.f / 16.f),
+            new Vector2f(7.f / 16.f, 0.f / 16.f),
+            new Vector2f(6.f / 16.f, 0.f)
+    };
+
+
     public static Vector3f[] NORMALS = {
             new Vector3f(0.f, 0.f, 0.f),
             new Vector3f(0.f, 0.f, 0.f),
@@ -76,37 +333,38 @@ public class BlockModel {
             new Vector3f(0.f, 0.f, 0.f)
     };
 
-    public static float[] vertices = new float[]{
-            -1.0f, 1.0f, -1.0f, // V0
-            -1.0f, -1.0f, -1.0f, // V1
-            1.0f, -1.0f, -1.0f, // V2
-            1.0f, 1.0f, -1.0f, // V3
+    public static float[] vertices = {
+            -0.5f,0.5f,-0.5f,
+            -0.5f,-0.5f,-0.5f,
+            0.5f,-0.5f,-0.5f,
+            0.5f,0.5f,-0.5f,
 
-            -1.0f, 1.0f, 1.0f, // V4
-            -1.0f, -1.0f, 1.0f, // V5
-            1.0f, -1.0f, 1.0f, // V6
-            1.0f, 1.0f, 1.0f, // V7
+            -0.5f,0.5f,0.5f,
+            -0.5f,-0.5f,0.5f,
+            0.5f,-0.5f,0.5f,
+            0.5f,0.5f,0.5f,
 
-            1.0f, 1.0f, -1.0f, // V8
-            1.0f, -1.0f, -1.0f, // V9
-            1.0f, -1.0f, 1.0f, // V10
-            1.0f, 1.0f, 1.0f, // V11
+            0.5f,0.5f,-0.5f,
+            0.5f,-0.5f,-0.5f,
+            0.5f,-0.5f,0.5f,
+            0.5f,0.5f,0.5f,
 
-            -1.0f, 1.0f, -1.0f, // V12
-            -1.0f, -1.0f, -1.0f, // V13
-            -1.0f, -1.0f, 1.0f, // V14
-            -1.0f, 1.0f, 1.0f, // V15
+            -0.5f,0.5f,-0.5f,
+            -0.5f,-0.5f,-0.5f,
+            -0.5f,-0.5f,0.5f,
+            -0.5f,0.5f,0.5f,
 
-            -1.0f, 1.0f, 1.0f, // V16
-            -1.0f, 1.0f, -1.0f, // V17
-            1.0f, 1.0f, -1.0f, // V18
-            1.0f, 1.0f, 1.0f, // V19
+            -0.5f,0.5f,0.5f,
+            -0.5f,0.5f,-0.5f,
+            0.5f,0.5f,-0.5f,
+            0.5f,0.5f,0.5f,
 
-            -1.0f, -1.0f, 1.0f, // V20
-            -1.0f, -1.0f, -1.0f, // V21
-            1.0f, -1.0f, -1.0f, // V22
-            1.0f, -1.0f, 1.0f, // V23
+            -0.5f,-0.5f,0.5f,
+            -0.5f,-0.5f,-0.5f,
+            0.5f,-0.5f,-0.5f,
+            0.5f,-0.5f,0.5f
     };
+
 
     public static float[] texturePos = new float[]{
             // Side

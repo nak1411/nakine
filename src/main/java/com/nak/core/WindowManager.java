@@ -1,13 +1,16 @@
 package com.nak.core;
 
-import com.nak.core.gui.ImGuiLayer;
 import com.nak.core.io.KeyInput;
 import com.nak.core.io.MouseInput;
-import com.nak.core.opengl.Framebuffer;
 import com.nak.core.util.Constants;
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.glfw.Callbacks;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.Objects;
@@ -50,7 +53,7 @@ public class WindowManager {
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GL11.GL_TRUE);
 
         // AA
-        //GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
+        GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
 
         boolean maximized = false;
         if (width == 0 || height == 0) {

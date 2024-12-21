@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ChunkMesh {
 
-    private List<BlockVertex> vertices;
+    private static List<BlockVertex> vertices;
     private List<Float> positionsList;
     private List<Float> texturePosList;
     private List<Float> normalsList;
@@ -74,37 +74,37 @@ public class ChunkMesh {
             if (!px) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new BlockVertex(new Vector3f(BlockModel.PX_POS[k].x + blockI.getPos().x, BlockModel.PX_POS[k].y + blockI.getPos().y, BlockModel.PX_POS[k].z + blockI.getPos().z),
-                            BlockModel.TEXTURE_POS[k], BlockModel.NORMALS[k]));
+                            BlockModel.UV_PX[(blockI.type * 6) + k], BlockModel.NORMALS[k]));
                 }
             }
             if (!nx) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new BlockVertex(new Vector3f(BlockModel.NX_POS[k].x + blockI.getPos().x, BlockModel.NX_POS[k].y + blockI.getPos().y, BlockModel.NX_POS[k].z + blockI.getPos().z),
-                            BlockModel.TEXTURE_POS[k], BlockModel.NORMALS[k]));
+                            BlockModel.UV_NX[(blockI.type * 6) + k], BlockModel.NORMALS[k]));
                 }
             }
             if (!py) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new BlockVertex(new Vector3f(BlockModel.PY_POS[k].x + blockI.getPos().x, BlockModel.PY_POS[k].y + blockI.getPos().y, BlockModel.PY_POS[k].z + blockI.getPos().z),
-                            BlockModel.TEXTURE_POS[k], BlockModel.NORMALS[k]));
+                            BlockModel.UV_PY[(blockI.type * 6) + k], BlockModel.NORMALS[k]));
                 }
             }
             if (!ny) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new BlockVertex(new Vector3f(BlockModel.NY_POS[k].x + blockI.getPos().x, BlockModel.NY_POS[k].y + blockI.getPos().y, BlockModel.NY_POS[k].z + blockI.getPos().z),
-                            BlockModel.TEXTURE_POS[k], BlockModel.NORMALS[k]));
+                            BlockModel.UV_NY[(blockI.type * 6) + k], BlockModel.NORMALS[k]));
                 }
             }
             if (!pz) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new BlockVertex(new Vector3f(BlockModel.PZ_POS[k].x + blockI.getPos().x, BlockModel.PZ_POS[k].y + blockI.getPos().y, BlockModel.PZ_POS[k].z + blockI.getPos().z),
-                            BlockModel.TEXTURE_POS[k], BlockModel.NORMALS[k]));
+                            BlockModel.UV_PZ[(blockI.type * 6) + k], BlockModel.NORMALS[k]));
                 }
             }
             if (!nz) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new BlockVertex(new Vector3f(BlockModel.NZ_POS[k].x + blockI.getPos().x, BlockModel.NZ_POS[k].y + blockI.getPos().y, BlockModel.NZ_POS[k].z + blockI.getPos().z),
-                            BlockModel.TEXTURE_POS[k], BlockModel.NORMALS[k]));
+                            BlockModel.UV_NZ[(blockI.type * 6) + k], BlockModel.NORMALS[k]));
                 }
             }
         }
@@ -135,5 +135,13 @@ public class ChunkMesh {
         for (int i = 0; i < normalsList.size(); i++) {
             normals[i] = normalsList.get(i);
         }
+
+        positionsList.clear();
+        texturePosList.clear();
+        normalsList.clear();
+    }
+
+    public static List<BlockVertex> getVertices() {
+        return vertices;
     }
 }

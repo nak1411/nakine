@@ -7,6 +7,7 @@ import com.nak.core.lighting.SpotLight;
 import com.nak.core.opengl.Model;
 import com.nak.core.terrain.Block;
 import com.nak.core.terrain.BlockModel;
+import com.nak.core.terrain.ChunkMesh;
 import com.nak.core.util.Utils;
 import com.nak.test.Launcher;
 import org.lwjgl.opengl.GL11;
@@ -41,7 +42,7 @@ public class TerrainRenderer implements Renderer {
             bind(model);
             List<Block> blockList = blocks.get(model);
             for (Block block : blockList) {
-                totalVertices = block.getModel().getVertexCount();
+                totalVertices = ChunkMesh.getVertices().size();
 //                if (block.getUid() == clickedObject) {
 //                    selectedEntity = block;
 //                }
