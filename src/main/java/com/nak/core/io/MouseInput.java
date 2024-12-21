@@ -3,10 +3,9 @@ package com.nak.core.io;
 import com.nak.core.WindowManager;
 import com.nak.core.entities.Camera;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 public class MouseInput {
     private static MouseInput instance;
@@ -54,9 +53,9 @@ public class MouseInput {
             }
         }
         if (action == GLFW_RELEASE) {
-                if (button < get().mouseButtonPressed.length) {
-                    get().mouseButtonPressed[button] = false;
-                    currentButton = -1;
+            if (button < get().mouseButtonPressed.length) {
+                get().mouseButtonPressed[button] = false;
+                currentButton = -1;
             }
         }
     }
@@ -120,7 +119,6 @@ public class MouseInput {
     public static float getScreenX() {
         float currentX = getX() - get().gameViewportPos.x;
         currentX = (currentX / get().gameViewportSize.x) * WindowManager.getWidth();
-
         return currentX;
     }
 
@@ -128,6 +126,15 @@ public class MouseInput {
         float currentY = getY() - get().gameViewportPos.y;
         currentY = WindowManager.getHeight() - (currentY / get().gameViewportSize.y) * WindowManager.getHeight();
         return currentY;
+    }
+
+    public static boolean isInWindow() {
+        if ((getScreenX() < WindowManager.getWidth()) && (getScreenX() > 0) && (getScreenY() < WindowManager.getHeight() && (getScreenY() > 0)))
+            return true;
+        else {
+            currentButton = -1;
+            return false;
+        }
     }
 
     public static boolean mouseButtonDown(int button) {

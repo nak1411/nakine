@@ -128,7 +128,7 @@ public class TestGame implements Logic {
 
     @Override
     public void input() {
-        if (MouseInput.mouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
+        if (MouseInput.mouseButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT) && MouseInput.isInWindow() && MouseInput.getCurrentButton() != -1) {
             updateCameraRotation();
             camera.moveRotation(rotVec.x * Constants.MOUSE_MOVE_SPEED, rotVec.y * Constants.MOUSE_MOVE_SPEED, 0);
         }
@@ -157,7 +157,7 @@ public class TestGame implements Logic {
 
     public void update(float frameTime) {
         // Lighting Updates
-        float factor = 1 - (Math.abs(sceneManager.getLightAngle()) - 80) / 10.0f;
+        float factor = 1 - (Math.abs(sceneManager.getLightAngle()) - 90) / 10.0f;
         sceneManager.getDirectionalLight().setIntensity(factor);
         sceneManager.getDirectionalLight().getColor().y = Math.max(factor, 0.9f);
         sceneManager.getDirectionalLight().getColor().z = Math.max(factor, 0.5f);
